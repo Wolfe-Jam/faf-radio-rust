@@ -11,7 +11,7 @@ ai_tldr:
   current_focus: Project initialization
   your_role: Build features with perfect context
 instant_context:
-  tech_stack: Tokio/Rust
+  tech_stack: Rust 2024, Tokio, tokio-tungstenite v0.28
   main_language: Rust
   key_files:
     - Cargo.toml
@@ -29,8 +29,7 @@ project:
   name: faf-radio-rust
   main_language: Rust
   type: rust
-  goal: WebSocket Radio Protocol client for Rust - broadcast-once context
-    distribution
+  goal: Day 2 Complete - Bronze Tier
 ai_instructions:
   priority_order:
     - 1. Read THIS .faf file first
@@ -128,3 +127,6 @@ turbo_cat_intelligence: 90
 stats:
   last_auto_time: 0.4
   times_run: 2
+metadata:
+  last_claude_sync: 2026-02-13T05:55:26.475Z
+  bi_sync: active
