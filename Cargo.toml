@@ -1,0 +1,40 @@
+[package]
+name = "faf-radio-rust"
+version = "0.1.0"
+edition = "2024"
+authors = ["wolfejam <wolfejam@faf.one>"]
+description = "Radio Protocol client for Rust - AI Context Broadcasting"
+license = "MIT"
+repository = "https://github.com/Wolfe-Jam/faf-radio-rust"
+homepage = "https://faf.one"
+documentation = "https://docs.rs/faf-radio-rust"
+readme = "README.md"
+keywords = ["faf", "radio-protocol", "websocket", "ai-context", "mcp"]
+categories = ["network-programming", "asynchronous", "web-programming::websocket"]
+
+[dependencies]
+tokio = { version = "1.42", features = ["full"] }
+tokio-tungstenite = { version = "0.28", features = ["native-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+futures-util = "0.3"
+url = "2.5"
+
+[dev-dependencies]
+tokio = { version = "1.42", features = ["full", "test-util"] }
+proptest = "1.6"
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
+[[example]]
+name = "multi_ai"
+path = "examples/multi_ai.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
