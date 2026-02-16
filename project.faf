@@ -1,5 +1,5 @@
 faf_version: 2.5.0
-generated: 2026-02-13T05:29:17.501Z
+generated: 2026-02-13T13:57:07.057Z
 ai_scoring_system: 2025-09-20
 ai_score: 26%
 ai_confidence: LOW
@@ -11,7 +11,7 @@ ai_tldr:
   current_focus: Project initialization
   your_role: Build features with perfect context
 instant_context:
-  tech_stack: Rust 2024, Tokio, tokio-tungstenite v0.28
+  tech_stack: Tokio/Rust
   main_language: Rust
   key_files:
     - Cargo.toml
@@ -28,8 +28,11 @@ context_quality:
 project:
   name: faf-radio-rust
   main_language: Rust
-  type: rust
-  goal: Day 2 Complete - Bronze Tier
+  type: fafb_radio_client
+  subtype: rust_websocket_client
+  ecosystem: fafb-broadcasting
+  fafb_support: true
+  broadcasts: binary_and_yaml
 ai_instructions:
   priority_order:
     - 1. Read THIS .faf file first
@@ -45,17 +48,8 @@ ai_instructions:
     - All TypeScript must pass strict mode
     - Test coverage required for new features
 stack:
-  runtime: Tokio
+  frontend: Tokio
   package_manager: Cargo
-  frontend: slotignore
-  ui_library: slotignore
-  backend: slotignore
-  database: slotignore
-  build: cargo
-  api_type: WebSocket client
-  hosting: crates.io
-  cicd: slotignore
-  css_framework: slotignore
 preferences:
   quality_bar: zero_errors
   commit_style: conventional_emoji
@@ -89,10 +83,6 @@ tags:
   user_defined: null
 human_context:
   who: Developers
-  what: 99% cost reduction via broadcast-once context distribution (Radio Protocol)
-  where: Rust applications, CLI tools, servers
-  why: Day 2 of Triple Launch Strategy - prove Radio Protocol works in Rust
-  when: Day 2 (February 2026) - part of Bun→Rust→Zig championship rollout
   how: Listen-Only Clients*
   additional_context: null
   context_score: 0
@@ -109,6 +99,22 @@ ai_scoring_details:
 claude_code:
   detected: true
   has_claude_md: true
+fafb_ecosystem:
+  detected: true
+  project_type: fafb_radio_client
+  ecosystem: fafb-broadcasting
+  language: Rust
+  confidence: 100
+  features:
+    - radio-protocol
+    - websocket-client
+    - tokio
+  fafb_support: true
+  subtype: rust_websocket_client
+  protocol: Radio Protocol v1.0
+  transport: WebSocket
+  broadcasts: binary_and_yaml
+  purpose: 99% cost reduction via broadcast-once context distribution
 gemini:
   cli_detected: true
   context_bridge: true
@@ -116,17 +122,6 @@ gemini:
   notes: Native Gemini CLI integration via FAF
 faf_dna:
   birth_dna: 29
-  birth_certificate: FAF-2026-FAFRADIO-3I5Y
-  birth_date: 2026-02-13T05:18:19.363Z
+  birth_certificate: FAF-2026-FAFRADIO-E9VD
+  birth_date: 2026-02-13T13:57:07.205Z
   current_score: 29
-stack_signature: rust-claudecode
-detected_frameworks:
-  - Claude Code
-  - Rust
-turbo_cat_intelligence: 90
-stats:
-  last_auto_time: 0.4
-  times_run: 2
-metadata:
-  last_claude_sync: 2026-02-13T05:55:26.475Z
-  bi_sync: active

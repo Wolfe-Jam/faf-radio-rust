@@ -1,0 +1,6 @@
+faf_version: 2.5.0
+project:
+  name: test-project
+  main_language: Rust
+stack:
+  package_manager: Cargo
