@@ -1,66 +1,38 @@
-# 📻 faf-radio-rust
+# mcpaas
 
-**Radio Protocol client for Rust - AI Context Broadcasting**
+**Your AI forgets you every session. MCPaaS remembers.**
 
-> Day 2 of the Triple Launch: Rust Edition
+You re-explain your stack to Claude. Switch to Gemini — re-explain everything. Open Cursor — again. Every session. Every tool. Every time.
 
-[![Rust](https://img.shields.io/badge/rust-1.85+-orange)](https://rust-lang.org)
-[![Edition](https://img.shields.io/badge/edition-2024-blue)](https://doc.rust-lang.org/edition-guide/rust-2024/index.html)
-[![Protocol](https://img.shields.io/badge/protocol-Radio%20v1.0-orange)](https://mcpaas.live/beacon)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+That's the drift tax. [$49M/day](https://fafdev.tools/value) burned industry-wide.
 
----
+This SDK connects you to [MCPaaS](https://mcpaas.live) — persistent AI context that follows you across tools, sessions, and teams.
 
-## The Big Idea
-
-Instead of re-sending AI context every session (expensive, slow, drift-prone), **broadcast once** and let everyone tune in.
-
-```
-❌ Traditional (The Letter Model)
-You → Claude (send 50KB)
-You → Grok (send 50KB again)
-You → Gemini (send 50KB again)
-Cost: 150KB, 3 API calls, potential drift
-
-✅ Radio Protocol (The Broadcasting Model)
-You → Radio (broadcast 50KB once)
-Claude, Grok, Gemini → Tune to 91.0 FM
-Cost: 50KB, 1 broadcast, zero drift
-```
-
-**99% cost reduction. Zero context drift. Infinite listeners.**
-
----
-
-## Quick Start
-
-### Installation
+## Install
 
 Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-faf-radio-rust = "0.1"
+mcpaas = "0.1"
 tokio = { version = "1", features = ["full"] }
 ```
 
-### Usage
+## Quick Start
 
 ```rust
-use faf_radio_rust::{RadioClient, RadioConfig};
+use mcpaas::{RadioClient, RadioConfig};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Connect to Radio Protocol server
-    let url = "wss://faf-beacon.wolfejam2020.workers.dev/radio";
-    let mut radio = RadioClient::new(RadioConfig::new(url));
+    let mut radio = RadioClient::new(
+        RadioConfig::new("wss://mcpaas.live/beacon/radio")
+    );
 
     radio.connect().await?;
-
-    // Tune to a frequency
     radio.tune(vec!["91.0".to_string()]).await?;
 
-    // Listen for broadcasts...
+    // Your context arrives — from any AI, any session
     tokio::time::sleep(tokio::time::Duration::from_secs(30)).await;
 
     radio.disconnect().await?;
@@ -68,113 +40,92 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
----
+That's it. Your context persists. Zero drift.
 
-## Architecture
+## How It Works
 
-**Listen-Only Clients**
-
-Rust clients tune to frequencies and receive broadcasts. Broadcasts are triggered server-side when context updates via HTTP POST.
+MCPaaS uses the **Radio Protocol** — broadcast once, every AI receives.
 
 ```
-┌─────────────────────────────────────────────┐
-│           Radio Protocol Flow               │
-├─────────────────────────────────────────────┤
-│                                             │
-│  1. Client connects via WebSocket           │
-│  2. Client tunes to frequency (91.0 FM)     │
-│  3. Server broadcasts when soul updates     │
-│  4. All tuned clients receive instantly     │
-│                                             │
-└─────────────────────────────────────────────┘
+Traditional (the tax):
+  You → Claude  (send 50KB context)
+  You → Grok    (send 50KB again)
+  You → Gemini  (send 50KB again)
+  = 3x cost, 3x latency, context drift
+
+Radio Protocol (the fix):
+  You → Broadcast to 91.0 FM (send once)
+  Claude  ← tuned to 91.0
+  Grok    ← tuned to 91.0
+  Gemini  ← tuned to 91.0
+  = 1x cost, instant, zero drift
 ```
 
----
+## Multi-AI Example
 
-## Available Frequencies
+```rust
+use mcpaas::{RadioClient, RadioConfig};
 
-| Frequency | Soul | Purpose |
-|-----------|------|---------|
-| 91.0 FM | nelly | Personal context (eternal memory demo) |
-| 92.5 FM | faf | Project updates |
-| 94.7 FM | wolfejam | Team context |
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let url = "wss://mcpaas.live/beacon/radio";
 
----
+    let mut claude = RadioClient::new(RadioConfig::new(url));
+    let mut grok   = RadioClient::new(RadioConfig::new(url));
+    let mut gemini = RadioClient::new(RadioConfig::new(url));
 
-## Examples
+    claude.connect().await?;
+    grok.connect().await?;
+    gemini.connect().await?;
 
-### Basic Example
+    claude.tune(vec!["91.0".to_string()]).await?;
+    grok.tune(vec!["91.0".to_string()]).await?;
+    gemini.tune(vec!["91.0".to_string()]).await?;
 
-```bash
-cargo run --example basic
+    // All three AIs now share the same context, in real time
+    Ok(())
+}
 ```
 
-See `examples/basic.rs` for full code.
+## API
 
-### Multi-AI Example
+### `RadioClient::new(config: RadioConfig) -> Self`
+Create a new Radio client.
 
-```bash
-cargo run --example multi_ai
-```
+### `RadioClient::with_url(url: &str) -> Self`
+Create a client with just a URL.
 
-Demonstrates 3 AIs (Claude, Grok, Gemini) tuned to the same frequency, all receiving broadcasts simultaneously.
+### Methods
 
----
+| Method | Description |
+|--------|-------------|
+| `connect().await` | Connect to MCPaaS |
+| `tune(frequencies).await` | Subscribe to frequencies |
+| `untune(frequencies).await` | Unsubscribe from frequencies |
+| `disconnect().await` | Disconnect |
+| `state().await` | Get connection state |
+| `validate_frequencies(&freqs)` | Validate frequency range (40.0-108.0 FM) |
 
-## Technical Stack
+### Features
 
-- **Runtime:** Tokio (async/await)
-- **WebSocket:** tokio-tungstenite v0.28
-- **Rust Edition:** 2024
-- **Serialization:** serde + serde_json
-
-**Features:**
 - Auto-reconnection with exponential backoff
 - Heartbeat mechanism (ping/pong every 30s)
-- Connection state management
 - Frequency validation (40.0-108.0 FM)
 - Type-safe protocol messages
+- Tokio async/await
 
----
+## Namepoints
 
-## Triple Launch Strategy
+Every frequency maps to a **namepoint** on MCPaaS — your permanent AI identity.
 
-| Day | Language | Status |
-|-----|----------|--------|
-| **Day 1** | Bun/TypeScript | ✅ Complete ([faf-radio-bun](https://github.com/Wolfe-Jam/faf-radio-bun)) |
-| **Day 2** | Rust | 🔜 In Progress (this repo) |
-| **Day 3** | Zig WASM (2.7KB) | 🔜 Pending |
+Free namepoints work. But `yourname.mcpaas.live` hits different than `user-38291.mcpaas.live`.
 
----
-
-## Server
-
-**Production:** `wss://faf-beacon.wolfejam2020.workers.dev/radio`
-
-Deployed on Cloudflare Workers (300+ edge locations). See [mcpaas-beacon](https://github.com/Wolfe-Jam/mcpaas-beacon) for server implementation.
-
----
-
-## 📋 Project Context (6Ws)
-
-**1W (WHO):** Rust developers building AI-powered applications
-
-**2W (WHAT):** 99% cost reduction via broadcast-once context distribution (Radio Protocol)
-
-**3W (WHERE):** Rust applications, CLI tools, servers
-
-**4W (WHY):** Day 2 of Triple Launch Strategy - prove Radio Protocol works in Rust
-
-**5W (WHEN):** Day 2 (February 2026) - part of Bun→Rust→Zig championship rollout
-
-**6W (HOW):** WebSocket client library with auto-reconnect, frequency tuning, and heartbeat
-
----
+**Claim yours before someone else does:** [mcpaas.live/claim](https://mcpaas.live/claim)
 
 ## License
 
-MIT © wolfejam
+MIT
 
 ---
 
-*Radio is back. Loved way more than REST.* 📻
+Built by [Wolfe James](https://github.com/Wolfe-Jam) | Powered by [MCPaaS](https://mcpaas.live) | Format: [FAF](https://faf.one)

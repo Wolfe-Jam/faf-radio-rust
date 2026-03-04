@@ -1,4 +1,4 @@
-use faf_radio_rust::{RadioClient, RadioConfig};
+use mcpaas::{RadioClient, RadioConfig};
 
 /// TIER 1: BRAKE SYSTEMS - Frequency Validation (Security Critical)
 /// These tests ensure the client rejects malicious or invalid frequency inputs

@@ -1,4 +1,4 @@
-use faf_radio_rust::{RadioClient, RadioConfig};
+use mcpaas::{RadioClient, RadioConfig};
 use tokio::time::{sleep, Duration};
 
 #[tokio::main]
