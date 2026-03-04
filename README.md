@@ -114,6 +114,21 @@ Create a client with just a URL.
 - Type-safe protocol messages
 - Tokio async/await
 
+## Testing
+
+**46/46 passing** — WJTTC Championship-Grade 3-Tier coverage:
+
+| Tier | Tests | What |
+|------|-------|------|
+| T1 BRAKES | 14 | Security — injection, boundary, validation |
+| T2 ENGINE | 18 | Core — state, config, serialization, WebSocket |
+| T3 AERO | 12 | Polish — error display, traits, edge cases |
+| Unit | 2 | Inline |
+
+```bash
+cargo test
+```
+
 ## See Also
 
 - **[faf-rust-sdk](https://crates.io/crates/faf-rust-sdk)** — Parse, validate, and compress .faf files in Rust. MCPaaS broadcasts the context; faf-rust-sdk reads the format.
