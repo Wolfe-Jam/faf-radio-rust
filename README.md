@@ -114,6 +114,12 @@ Create a client with just a URL.
 - Type-safe protocol messages
 - Tokio async/await
 
+## See Also
+
+- **[faf-rust-sdk](https://crates.io/crates/faf-rust-sdk)** — Parse, validate, and compress .faf files in Rust. MCPaaS broadcasts the context; faf-rust-sdk reads the format.
+
+**Do I need both?** Yes. `faf-rust-sdk` parses your .faf project DNA. `mcpaas` streams it live to every AI. One reads, the other delivers.
+
 ## Namepoints
 
 Every frequency maps to a **namepoint** on MCPaaS — your permanent AI identity.
