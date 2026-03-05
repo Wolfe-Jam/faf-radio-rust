@@ -36,7 +36,10 @@ fn test_invalid_frequency_below_min() {
     let client = RadioClient::new(config);
 
     let result = client.validate_frequencies(&["39.9".to_string()]);
-    assert!(result.is_err(), "39.9 FM should be rejected (below minimum)");
+    assert!(
+        result.is_err(),
+        "39.9 FM should be rejected (below minimum)"
+    );
 }
 
 #[test]
@@ -45,7 +48,10 @@ fn test_invalid_frequency_above_max() {
     let client = RadioClient::new(config);
 
     let result = client.validate_frequencies(&["108.1".to_string()]);
-    assert!(result.is_err(), "108.1 FM should be rejected (above maximum)");
+    assert!(
+        result.is_err(),
+        "108.1 FM should be rejected (above maximum)"
+    );
 }
 
 #[test]
@@ -90,7 +96,10 @@ fn test_command_injection_attempt() {
     let client = RadioClient::new(config);
 
     let result = client.validate_frequencies(&["91.0 && rm -rf /".to_string()]);
-    assert!(result.is_err(), "Command injection attempt should be rejected");
+    assert!(
+        result.is_err(),
+        "Command injection attempt should be rejected"
+    );
 }
 
 #[test]
@@ -117,12 +126,12 @@ fn test_multiple_valid_frequencies() {
     let config = RadioConfig::new("wss://example.com");
     let client = RadioClient::new(config);
 
-    let result = client.validate_frequencies(&[
-        "91.0".to_string(),
-        "92.5".to_string(),
-        "94.7".to_string(),
-    ]);
-    assert!(result.is_ok(), "Multiple valid frequencies should be accepted");
+    let result =
+        client.validate_frequencies(&["91.0".to_string(), "92.5".to_string(), "94.7".to_string()]);
+    assert!(
+        result.is_ok(),
+        "Multiple valid frequencies should be accepted"
+    );
 }
 
 #[test]

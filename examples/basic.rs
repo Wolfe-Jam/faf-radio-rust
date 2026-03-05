@@ -1,5 +1,5 @@
 use mcpaas::{RadioClient, RadioConfig};
-use tokio::time::{sleep, Duration};
+use tokio::time::{Duration, sleep};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

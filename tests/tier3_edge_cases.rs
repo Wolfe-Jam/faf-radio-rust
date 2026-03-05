@@ -14,18 +14,28 @@ use serde_json;
 fn test_error_display_invalid_frequency() {
     let err = RadioError::InvalidFrequency("999.9".to_string());
     let display = format!("{}", err);
-    assert!(display.contains("999.9"), "Error should contain the frequency value");
-    assert!(display.contains("40.0") || display.contains("108.0"),
-        "Error should mention valid range");
+    assert!(
+        display.contains("999.9"),
+        "Error should contain the frequency value"
+    );
+    assert!(
+        display.contains("40.0") || display.contains("108.0"),
+        "Error should mention valid range"
+    );
 }
 
 #[test]
 fn test_error_display_not_connected() {
     let err = RadioError::NotConnected;
     let display = format!("{}", err);
-    assert!(!display.is_empty(), "NotConnected display should not be empty");
-    assert!(display.to_lowercase().contains("not connected") ||
-            display.to_lowercase().contains("not_connected"));
+    assert!(
+        !display.is_empty(),
+        "NotConnected display should not be empty"
+    );
+    assert!(
+        display.to_lowercase().contains("not connected")
+            || display.to_lowercase().contains("not_connected")
+    );
 }
 
 #[test]
@@ -33,8 +43,10 @@ fn test_error_display_already_connected() {
     let err = RadioError::AlreadyConnected;
     let display = format!("{}", err);
     assert!(!display.is_empty());
-    assert!(display.to_lowercase().contains("already connected") ||
-            display.to_lowercase().contains("already_connected"));
+    assert!(
+        display.to_lowercase().contains("already connected")
+            || display.to_lowercase().contains("already_connected")
+    );
 }
 
 #[test]
@@ -51,7 +63,11 @@ fn test_all_error_variants_display() {
 
     for err in &errors {
         let display = format!("{}", err);
-        assert!(!display.is_empty(), "Error {:?} should have non-empty display", err);
+        assert!(
+            !display.is_empty(),
+            "Error {:?} should have non-empty display",
+            err
+        );
     }
 
     // We skip WebSocket, InvalidUrl, Json errors since they require
@@ -102,7 +118,11 @@ fn test_connection_state_debug() {
 
     for state in &states {
         let debug = format!("{:?}", state);
-        assert!(!debug.is_empty(), "Debug output should be non-empty for {:?}", state);
+        assert!(
+            !debug.is_empty(),
+            "Debug output should be non-empty for {:?}",
+            state
+        );
     }
 }
 
@@ -114,7 +134,10 @@ fn test_connection_state_debug() {
 fn test_unknown_server_message_type() {
     let json = r#"{"type":"unknown_type","data":"hello"}"#;
     let result = serde_json::from_str::<ServerMessage>(json);
-    assert!(result.is_err(), "Unknown message type should fail deserialization");
+    assert!(
+        result.is_err(),
+        "Unknown message type should fail deserialization"
+    );
 }
 
 #[test]

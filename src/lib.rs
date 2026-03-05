@@ -6,8 +6,8 @@ pub use types::{ClientAction, ConnectionState, RadioConfig, ServerMessage};
 
 use futures_util::{SinkExt, StreamExt};
 use std::sync::Arc;
-use tokio::sync::{mpsc, RwLock};
-use tokio::time::{interval, Duration};
+use tokio::sync::{RwLock, mpsc};
+use tokio::time::{Duration, interval};
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 
 /// Radio Protocol WebSocket client
@@ -111,8 +111,9 @@ impl RadioClient {
     /// Main message loop
     async fn message_loop(
         mut write: impl SinkExt<Message> + Unpin,
-        mut read: impl StreamExt<Item = std::result::Result<Message, tokio_tungstenite::tungstenite::Error>>
-            + Unpin,
+        mut read: impl StreamExt<
+            Item = std::result::Result<Message, tokio_tungstenite::tungstenite::Error>,
+        > + Unpin,
         mut rx: mpsc::UnboundedReceiver<ClientAction>,
         state: Arc<RwLock<ConnectionState>>,
         config: RadioConfig,
@@ -208,14 +209,20 @@ mod tests {
 
         // Valid frequencies
         assert!(client.validate_frequencies(&["91.0".to_string()]).is_ok());
-        assert!(client
-            .validate_frequencies(&["40.0".to_string(), "108.0".to_string()])
-            .is_ok());
+        assert!(
+            client
+                .validate_frequencies(&["40.0".to_string(), "108.0".to_string()])
+                .is_ok()
+        );
 
         // Invalid frequencies
         assert!(client.validate_frequencies(&["39.9".to_string()]).is_err());
         assert!(client.validate_frequencies(&["108.1".to_string()]).is_err());
-        assert!(client.validate_frequencies(&["invalid".to_string()]).is_err());
+        assert!(
+            client
+                .validate_frequencies(&["invalid".to_string()])
+                .is_err()
+        );
     }
 
     #[test]

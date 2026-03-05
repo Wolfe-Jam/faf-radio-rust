@@ -3,7 +3,7 @@
 //! Tests state management, configuration, serialization,
 //! and WebSocket integration for the Radio Protocol client.
 
-use mcpaas::{ClientAction, ConnectionState, RadioConfig, RadioError, RadioClient, ServerMessage};
+use mcpaas::{ClientAction, ConnectionState, RadioClient, RadioConfig, RadioError, ServerMessage};
 use serde_json;
 
 // =============================================================================
@@ -124,7 +124,10 @@ async fn test_tune_invalid_freq_before_send() {
     let result = client.tune(vec!["999.0".to_string()]).await;
     assert!(result.is_err());
     // Validation happens first, so we get InvalidFrequency, not NotConnected
-    assert!(matches!(result.unwrap_err(), RadioError::InvalidFrequency(_)));
+    assert!(matches!(
+        result.unwrap_err(),
+        RadioError::InvalidFrequency(_)
+    ));
 }
 
 #[tokio::test]
@@ -132,7 +135,10 @@ async fn test_untune_invalid_freq_before_send() {
     let client = RadioClient::with_url("wss://example.com");
     let result = client.untune(vec!["0.0".to_string()]).await;
     assert!(result.is_err());
-    assert!(matches!(result.unwrap_err(), RadioError::InvalidFrequency(_)));
+    assert!(matches!(
+        result.unwrap_err(),
+        RadioError::InvalidFrequency(_)
+    ));
 }
 
 #[tokio::test]
@@ -185,7 +191,8 @@ fn test_ping_action_serialization() {
 #[test]
 fn test_server_messages_deserialization() {
     // Connected
-    let connected_json = r#"{"type":"connected","clientId":"abc-123","message":"Welcome","frequencies":{}}"#;
+    let connected_json =
+        r#"{"type":"connected","clientId":"abc-123","message":"Welcome","frequencies":{}}"#;
     let msg: ServerMessage = serde_json::from_str(connected_json).unwrap();
     assert!(matches!(msg, ServerMessage::Connected { .. }));
 
