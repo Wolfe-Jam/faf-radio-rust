@@ -4,11 +4,19 @@ mod types;
 pub use error::{RadioError, Result};
 pub use types::{ClientAction, ConnectionState, RadioConfig, ServerMessage};
 
+use futures_util::stream::SplitSink;
+use futures_util::stream::SplitStream;
 use futures_util::{SinkExt, StreamExt};
 use std::sync::Arc;
+use tokio::net::TcpStream;
 use tokio::sync::{RwLock, mpsc};
 use tokio::time::{Duration, interval};
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+use tokio_tungstenite::{
+    MaybeTlsStream, WebSocketStream, connect_async, tungstenite::protocol::Message,
+};
+
+type WsWrite = SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>;
+type WsRead = SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>;
 
 /// Radio Protocol WebSocket client
 pub struct RadioClient {
@@ -108,55 +116,107 @@ impl RadioClient {
         Ok(())
     }
 
-    /// Main message loop
+    /// Main message loop with auto-reconnect
     async fn message_loop(
-        mut write: impl SinkExt<Message> + Unpin,
-        mut read: impl StreamExt<
-            Item = std::result::Result<Message, tokio_tungstenite::tungstenite::Error>,
-        > + Unpin,
+        mut write: WsWrite,
+        mut read: WsRead,
         mut rx: mpsc::UnboundedReceiver<ClientAction>,
         state: Arc<RwLock<ConnectionState>>,
         config: RadioConfig,
         tx: mpsc::UnboundedSender<ClientAction>,
     ) {
         let mut heartbeat = interval(Duration::from_millis(config.heartbeat_interval_ms));
+        let mut attempt: u32 = 0;
 
         loop {
-            tokio::select! {
-                // Handle outgoing messages
-                Some(action) = rx.recv() => {
-                    let json = serde_json::to_string(&action).unwrap();
-                    let msg = Message::text(json);
-                    if write.send(msg).await.is_err() {
-                        eprintln!("[Radio] Send error");
-                        break;
+            // Inner select loop — runs until connection breaks
+            let broke_cleanly = loop {
+                tokio::select! {
+                    Some(action) = rx.recv() => {
+                        let json = serde_json::to_string(&action).unwrap();
+                        let msg = Message::text(json);
+                        if write.send(msg).await.is_err() {
+                            eprintln!("[Radio] Send error");
+                            break false;
+                        }
                     }
-                }
 
-                // Handle incoming messages
-                Some(msg) = read.next() => {
-                    match msg {
-                        Ok(Message::Text(text)) => {
-                            if let Ok(server_msg) = serde_json::from_str::<ServerMessage>(&text) {
-                                Self::handle_server_message(server_msg);
+                    Some(msg) = read.next() => {
+                        match msg {
+                            Ok(Message::Text(text)) => {
+                                // Connection is alive — reset attempt counter
+                                attempt = 0;
+                                if let Ok(server_msg) = serde_json::from_str::<ServerMessage>(&text) {
+                                    Self::handle_server_message(server_msg);
+                                }
                             }
+                            Ok(Message::Close(_)) => {
+                                println!("[Radio] Connection closed by server");
+                                break true;
+                            }
+                            Err(_) => {
+                                eprintln!("[Radio] Read error");
+                                break false;
+                            }
+                            _ => {}
                         }
-                        Ok(Message::Close(_)) => {
-                            println!("[Radio] Connection closed");
-                            *state.write().await = ConnectionState::Disconnected;
-                            break;
-                        }
-                        Err(_) => {
-                            eprintln!("[Radio] Read error");
-                            break;
-                        }
-                        _ => {}
+                    }
+
+                    _ = heartbeat.tick() => {
+                        let _ = tx.send(ClientAction::Ping);
                     }
                 }
+            };
 
-                // Send heartbeat ping
-                _ = heartbeat.tick() => {
-                    let _ = tx.send(ClientAction::Ping);
+            // Should we reconnect?
+            if !config.auto_reconnect {
+                break;
+            }
+            if broke_cleanly {
+                // Server sent Close frame — intentional disconnect, don't retry
+                break;
+            }
+            if config.max_reconnect_attempts > 0 && attempt >= config.max_reconnect_attempts {
+                eprintln!(
+                    "[Radio] Max reconnect attempts reached ({})",
+                    config.max_reconnect_attempts
+                );
+                break;
+            }
+
+            // Exponential backoff
+            attempt += 1;
+            let delay = std::cmp::min(
+                config.reconnect_delay_ms * 2u64.saturating_pow(attempt - 1),
+                config.max_reconnect_delay_ms,
+            );
+            eprintln!(
+                "[Radio] Reconnecting in {}ms (attempt {}/{})...",
+                delay,
+                attempt,
+                if config.max_reconnect_attempts == 0 {
+                    "∞".to_string()
+                } else {
+                    config.max_reconnect_attempts.to_string()
+                }
+            );
+
+            *state.write().await = ConnectionState::Reconnecting;
+            tokio::time::sleep(Duration::from_millis(delay)).await;
+
+            // Attempt reconnection
+            match connect_async(&config.url).await {
+                Ok((ws_stream, _)) => {
+                    let (new_write, new_read) = ws_stream.split();
+                    write = new_write;
+                    read = new_read;
+                    *state.write().await = ConnectionState::Connected;
+                    heartbeat = interval(Duration::from_millis(config.heartbeat_interval_ms));
+                    eprintln!("[Radio] Reconnected successfully");
+                }
+                Err(e) => {
+                    eprintln!("[Radio] Reconnect failed: {}", e);
+                    continue;
                 }
             }
         }
