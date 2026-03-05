@@ -24,7 +24,7 @@ url = "2.5"
 
 [dev-dependencies]
 tokio = { version = "1.42", features = ["full", "test-util"] }
-proptest = "1.6"
+
 
 [[example]]
 name = "basic"
