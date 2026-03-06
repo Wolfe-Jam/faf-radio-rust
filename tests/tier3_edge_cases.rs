@@ -3,7 +3,7 @@
 //! Tests error display formatting, trait behaviors, deserialization
 //! edge cases, and configuration boundary conditions.
 
-use mcpaas::{ConnectionState, RadioConfig, RadioError, ServerMessage};
+use faf_radio_rust::{ConnectionState, RadioConfig, RadioError, ServerMessage};
 use serde_json;
 
 // =============================================================================

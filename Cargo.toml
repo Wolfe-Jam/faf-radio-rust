@@ -1,16 +1,16 @@
 [package]
-name = "mcpaas"
-version = "0.2.0"
+name = "faf-radio-rust"
+version = "0.1.0"
 edition = "2024"
 authors = ["wolfejam <wolfejam@faf.one>"]
-description = "Persistent AI context that follows you across tools, sessions, and teams."
+description = "Radio Protocol client for FAF — broadcast AI context once, all tools receive. Client SDK for mcpaas.live."
 license = "MIT"
 repository = "https://github.com/Wolfe-Jam/faf-radio-rust"
 homepage = "https://mcpaas.live"
-documentation = "https://docs.rs/mcpaas"
+documentation = "https://docs.rs/faf-radio-rust"
 readme = "README.md"
 exclude = ["bench-fafb", "bench-fafb.rs", "benchmark*", "demos/", "*.gif", "*.faf", "*.fafb", "test.*", ".faf-dna", ".fafignore", ".gemini/"]
-keywords = ["mcpaas", "ai-context", "websocket", "persistent-context", "faf"]
+keywords = ["faf", "radio", "ai-context", "websocket", "mcpaas"]
 categories = ["network-programming", "asynchronous", "web-programming::websocket"]
 
 [dependencies]
