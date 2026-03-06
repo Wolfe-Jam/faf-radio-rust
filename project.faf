@@ -1,131 +1,47 @@
-faf_version: 2.5.0
-generated: 2026-02-13T13:57:07.057Z
-ai_scoring_system: 2025-09-20
-ai_score: 26%
-ai_confidence: LOW
-ai_value: 30_seconds_replaces_20_minutes_of_questions
-ai_tldr:
-  project: faf-radio-rust
-  stack: Tokio/Rust
-  quality_bar: production_ready
-  current_focus: Project initialization
-  your_role: Build features with perfect context
+faf_version: '3.3'
+project:
+  name: mcpaas
+  goal: Persistent AI context via Radio Protocol — broadcast once, all AIs receive
+  main_language: Rust
+  version: 0.2.0
+  license: MIT
+  type: rust_crate
+  subtype: websocket_client
+  ecosystem: fafb-broadcasting
 instant_context:
-  tech_stack: Rust 2024, Tokio, tokio-tungstenite v0.28
+  tech_stack:
+    - Rust
+    - tokio
+    - tokio-tungstenite
+    - serde
+    - serde_json
   main_language: Rust
   key_files:
     - Cargo.toml
-    - src/main.rs
-context_quality:
-  slots_filled: 6/21 (29%)
-  ai_confidence: LOW
-  handoff_ready: false
-  missing_context:
-    - Core problem
-    - Timeline
-    - CI/CD pipeline
-    - Database
-project:
-  name: faf-radio-rust
-  main_language: Rust
-  type: fafb_radio_client
-  subtype: rust_websocket_client
-  ecosystem: fafb-broadcasting
-  fafb_support: true
-  broadcasts: binary_and_yaml
-  goal: Day 2 Complete - Bronze Tier
+    - src/lib.rs
+    - src/types.rs
+    - src/error.rs
 ai_instructions:
   priority_order:
     - 1. Read THIS .faf file first
     - 2. Check CLAUDE.md for session context
-    - 3. Review package.json for dependencies
+    - 3. Review Cargo.toml for dependencies
   working_style:
     code_first: true
     explanations: minimal
     quality_bar: zero_errors
     testing: required
-  warnings:
-    - Never modify dial components without approval
-    - All TypeScript must pass strict mode
-    - Test coverage required for new features
-stack:
-  frontend: Tokio
-  package_manager: Cargo
+commands:
+  build: cargo build
+  test: cargo test
+  lint: cargo clippy
+  format: cargo fmt
+state:
+  phase: production
+  version: 0.2.0
+  status: green_flag
 preferences:
   quality_bar: zero_errors
   commit_style: conventional_emoji
   response_style: concise_code_first
-  explanation_level: minimal
-  communication: direct
   testing: required
-  documentation: as_needed
-state:
-  phase: development
-  version: 1.0.0
-  focus: production_deployment
-  status: green_flag
-  next_milestone: npm_publication
-  blockers: null
-scores:
-  faf_score: 26
-  slot_based_percentage: 29
-  total_slots: 21
-tags:
-  auto_generated:
-    - faf-radio-rust
-    - tokio
-    - rust
-  smart_defaults:
-    - .faf
-    - ai-ready
-    - "2026"
-    - software
-    - open-source
-  user_defined: null
-human_context:
-  who: Developers
-  how: Listen-Only Clients*
-  additional_context: null
-  context_score: 0
-  total_prd_score: 26
-  success_rate: 50%
-ai_scoring_details:
-  system_date: 2025-09-20
-  slot_based_percentage: 29
-  ai_score: 26
-  total_slots: 21
-  filled_slots: 6
-  scoring_method: Honest percentage - no fake minimums
-  trust_embedded: COUNT ONCE architecture - trust MY embedded scores
-claude_code:
-  detected: true
-  has_claude_md: true
-fafb_ecosystem:
-  detected: true
-  project_type: fafb_radio_client
-  ecosystem: fafb-broadcasting
-  language: Rust
-  confidence: 100
-  features:
-    - radio-protocol
-    - websocket-client
-    - tokio
-  fafb_support: true
-  subtype: rust_websocket_client
-  protocol: Radio Protocol v1.0
-  transport: WebSocket
-  broadcasts: binary_and_yaml
-  purpose: 99% cost reduction via broadcast-once context distribution
-gemini:
-  cli_detected: true
-  context_bridge: true
-  agents_manifest: true
-  notes: Native Gemini CLI integration via FAF
-faf_dna:
-  birth_dna: 29
-  birth_certificate: FAF-2026-FAFRADIO-E9VD
-  birth_date: 2026-02-13T13:57:07.205Z
-  current_score: 29
-metadata:
-  last_claude_sync: 2026-03-05T02:03:58.254Z
-  bi_sync: active

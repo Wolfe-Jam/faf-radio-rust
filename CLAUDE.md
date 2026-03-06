@@ -4,7 +4,7 @@
 **Current Position:** Day 2 Complete - Bronze Tier
 **Tyre Compound:** ULTRASOFT C5 (Maximum Performance)
 **Test Status:** 46/46 passing (100% - Championship 🏆)
-**Deployment:** Published to crates.io (mcpaas@0.1.0)
+**Deployment:** Published to crates.io (mcpaas@0.2.0)
 
 ---
 
@@ -137,7 +137,7 @@ Server (HTTP + WebSocket):
 - [x] Championship commit
 
 ### Next Steps 🔜
-- [x] Publish to crates.io ✅ (mcpaas@0.1.0 — 2026-03-04)
+- [x] Publish to crates.io ✅ (mcpaas@0.2.0 — 2026-03-04)
 - [ ] Add CI/CD (GitHub Actions)
 - [ ] Add more examples
 - [ ] Documentation improvements

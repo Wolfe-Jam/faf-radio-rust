@@ -14,7 +14,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-mcpaas = "0.1"
+mcpaas = "0.2"
 tokio = { version = "1", features = ["full"] }
 ```
 
