@@ -1,7 +1,7 @@
-faf_version: '3.3'
+faf_version: "3.3"
 project:
-  name: mcpaas
-  goal: Persistent AI context via Radio Protocol — broadcast once, all AIs receive
+  name: faf-radio-rust
+  goal: Day 2 Complete - Bronze Tier
   main_language: Rust
   version: 0.2.0
   license: MIT
@@ -9,12 +9,7 @@ project:
   subtype: websocket_client
   ecosystem: fafb-broadcasting
 instant_context:
-  tech_stack:
-    - Rust
-    - tokio
-    - tokio-tungstenite
-    - serde
-    - serde_json
+  tech_stack: Rust 2024, Tokio, tokio-tungstenite v0.28
   main_language: Rust
   key_files:
     - Cargo.toml
@@ -45,3 +40,6 @@ preferences:
   commit_style: conventional_emoji
   response_style: concise_code_first
   testing: required
+metadata:
+  last_claude_sync: 2026-03-06T07:51:05.252Z
+  bi_sync: active
