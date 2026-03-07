@@ -1,10 +1,10 @@
 # 🏎️ CLAUDE.md - faf-radio-rust Persistent Context & Intelligence
 
 ## PROJECT STATE: CHAMPIONSHIP 🥉
-**Current Position:** v0.2.0 — Grok Presets + Client Broadcast
+**Current Position:** v0.2.1 — WJTTC Tier 4 Championship
 **Tyre Compound:** ULTRASOFT C5 (Maximum Performance)
-**Test Status:** 50/50 passing (100% - Championship 🏆)
-**Deployment:** Published to crates.io (faf-radio-rust@0.2.0)
+**Test Status:** 77/77 passing (100% - Championship 🏆)
+**Deployment:** Published to crates.io (faf-radio-rust@0.2.1)
 
 ---
 
@@ -12,7 +12,7 @@
 
 ### Project Identity
 - **Name:** faf-radio-rust
-- **Version:** 0.2.0
+- **Version:** 0.2.1
 - **Stack:** Rust 2024, Tokio, tokio-tungstenite v0.28
 - **Quality:** Championship Performance 🥉
 - **Tagline:** "Radio is back. Loved way more than REST."
@@ -46,8 +46,8 @@ Server (HTTP + WebSocket):
 ### 📊 Context Quality Status
 - **FAF Score:** 94/100 🥉 Bronze (genuine faf-cli workflow)
 - **Birth DNA:** 29% → **Growth:** +65% in 21 minutes
-- **Test Coverage:** 50/50 (100%)
-- **WJTTC Certification:** All 3 Tiers Complete (T1: 14, T2: 19, T3: 12) + 5 unit
+- **Test Coverage:** 77/77 (100%)
+- **WJTTC Certification:** All 4 Tiers Complete (T1: 14, T2: 19, T3: 12, T4: 27) + 5 unit
 - **Overall Assessment:** Championship Bronze
 - **Last Updated:** 2026-03-06
 
@@ -72,15 +72,16 @@ Server (HTTP + WebSocket):
 ### Test Results (Championship 🏆)
 
 **Layer 1: Industry Standard (Rust cargo test)**
-- ✅ 50 tests passing
+- ✅ 77 tests passing
 - ✅ 0 tests failing
 - ✅ 100% pass rate
 - ✅ Zero errors, zero warnings, clippy clean
 
-**Layer 2: WJTTC Championship (3-Tier Coverage)**
+**Layer 2: WJTTC Championship (4-Tier Coverage)**
 - ✅ Tier 1 BRAKES (Security): 14/14 passing
 - ✅ Tier 2 ENGINE (Core): 19/19 passing
 - ✅ Tier 3 AERO (Edge Cases): 12/12 passing
+- ✅ Tier 4 BROADCAST+GROK (v0.2.0): 27/27 passing
 - ✅ Unit tests: 5/5 passing
 
 **Test Breakdown:**
@@ -90,6 +91,8 @@ Server (HTTP + WebSocket):
   - State management, config, serialization, broadcast serialization, local WS integration
 - Tier 3: Edge cases (12 tests - Aero)
   - Error display, trait behaviors, deserialization, config boundaries
+- Tier 4: Broadcast + Grok (27 tests - v0.2.0 APIs)
+  - Grok preset brakes, broadcast serialization, frequency validation, validation order, live WS broadcast, server message edge cases
 - Unit tests (5 tests - Inline)
   - Frequency validation, initial state, grok preset, broadcast invalid freq, broadcast when disconnected
 
@@ -113,6 +116,7 @@ Server (HTTP + WebSocket):
 - `tests/tier1_frequency_validation.rs` - Security (14 tests)
 - `tests/tier2_core_functionality.rs` - Core (19 tests)
 - `tests/tier3_edge_cases.rs` - Edge cases (12 tests)
+- `tests/tier4_broadcast_grok.rs` - Broadcast + Grok (27 tests)
 
 ### Documentation
 - `README.md` - API reference, examples, 6Ws
