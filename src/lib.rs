@@ -308,7 +308,10 @@ mod tests {
     #[test]
     fn test_grok_preset() {
         let config = RadioConfig::grok();
-        assert_eq!(config.url, "wss://faf-beacon.wolfejam2020.workers.dev/radio");
+        assert_eq!(
+            config.url,
+            "wss://faf-beacon.wolfejam2020.workers.dev/radio"
+        );
         assert!(config.auto_reconnect);
         assert_eq!(config.max_reconnect_attempts, 5);
     }

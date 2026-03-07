@@ -3,7 +3,9 @@
 //! Championship-grade tests for RadioConfig::grok(), ClientAction::Broadcast,
 //! and RadioClient::broadcast(). For xAI. Brakes MUST work.
 
-use faf_radio_rust::{ClientAction, ConnectionState, RadioClient, RadioConfig, RadioError, ServerMessage};
+use faf_radio_rust::{
+    ClientAction, ConnectionState, RadioClient, RadioConfig, RadioError, ServerMessage,
+};
 use serde_json;
 
 // =============================================================================
@@ -14,8 +16,7 @@ use serde_json;
 fn test_grok_preset_url_exact() {
     let config = RadioConfig::grok();
     assert_eq!(
-        config.url,
-        "wss://faf-beacon.wolfejam2020.workers.dev/radio",
+        config.url, "wss://faf-beacon.wolfejam2020.workers.dev/radio",
         "Grok preset must use the exact beacon URL"
     );
 }
@@ -26,9 +27,15 @@ fn test_grok_preset_inherits_defaults() {
     let defaults = RadioConfig::default();
 
     assert_eq!(config.auto_reconnect, defaults.auto_reconnect);
-    assert_eq!(config.max_reconnect_attempts, defaults.max_reconnect_attempts);
+    assert_eq!(
+        config.max_reconnect_attempts,
+        defaults.max_reconnect_attempts
+    );
     assert_eq!(config.reconnect_delay_ms, defaults.reconnect_delay_ms);
-    assert_eq!(config.max_reconnect_delay_ms, defaults.max_reconnect_delay_ms);
+    assert_eq!(
+        config.max_reconnect_delay_ms,
+        defaults.max_reconnect_delay_ms
+    );
     assert_eq!(config.heartbeat_interval_ms, defaults.heartbeat_interval_ms);
 }
 
@@ -176,28 +183,42 @@ fn test_broadcast_with_array_event() {
 async fn test_broadcast_rejects_frequency_below_range() {
     let client = RadioClient::new(RadioConfig::grok());
     let result = client.broadcast("39.9", serde_json::json!({})).await;
-    assert!(matches!(result.unwrap_err(), RadioError::InvalidFrequency(_)));
+    assert!(matches!(
+        result.unwrap_err(),
+        RadioError::InvalidFrequency(_)
+    ));
 }
 
 #[tokio::test]
 async fn test_broadcast_rejects_frequency_above_range() {
     let client = RadioClient::new(RadioConfig::grok());
     let result = client.broadcast("108.1", serde_json::json!({})).await;
-    assert!(matches!(result.unwrap_err(), RadioError::InvalidFrequency(_)));
+    assert!(matches!(
+        result.unwrap_err(),
+        RadioError::InvalidFrequency(_)
+    ));
 }
 
 #[tokio::test]
 async fn test_broadcast_rejects_non_numeric_frequency() {
     let client = RadioClient::new(RadioConfig::grok());
     let result = client.broadcast("grok", serde_json::json!({})).await;
-    assert!(matches!(result.unwrap_err(), RadioError::InvalidFrequency(_)));
+    assert!(matches!(
+        result.unwrap_err(),
+        RadioError::InvalidFrequency(_)
+    ));
 }
 
 #[tokio::test]
 async fn test_broadcast_rejects_injection_in_frequency() {
     let client = RadioClient::new(RadioConfig::grok());
-    let result = client.broadcast("91.0; DROP TABLE", serde_json::json!({})).await;
-    assert!(matches!(result.unwrap_err(), RadioError::InvalidFrequency(_)));
+    let result = client
+        .broadcast("91.0; DROP TABLE", serde_json::json!({}))
+        .await;
+    assert!(matches!(
+        result.unwrap_err(),
+        RadioError::InvalidFrequency(_)
+    ));
 }
 
 #[tokio::test]
@@ -224,7 +245,9 @@ async fn test_broadcast_accepts_boundary_max() {
 async fn test_broadcast_validates_before_send() {
     // InvalidFrequency must fire BEFORE NotConnected
     let client = RadioClient::new(RadioConfig::grok());
-    let result = client.broadcast("0.0", serde_json::json!({"big": "payload"})).await;
+    let result = client
+        .broadcast("0.0", serde_json::json!({"big": "payload"}))
+        .await;
     assert!(result.is_err());
     assert!(
         matches!(result.unwrap_err(), RadioError::InvalidFrequency(_)),
@@ -259,7 +282,9 @@ async fn test_broadcast_over_live_connection() {
             let (_write, mut read) = futures_util::StreamExt::split(ws);
             // Read the broadcast message
             while let Some(msg) = futures_util::StreamExt::next(&mut read).await {
-                if msg.is_ok() { break; }
+                if msg.is_ok() {
+                    break;
+                }
             }
             tokio::time::sleep(std::time::Duration::from_secs(1)).await;
         }
@@ -268,10 +293,15 @@ async fn test_broadcast_over_live_connection() {
     let mut client = RadioClient::with_url(&ws_url);
     client.connect().await.unwrap();
 
-    let result = client.broadcast("91.0", serde_json::json!({
-        "type": "fafb",
-        "project": "test",
-    })).await;
+    let result = client
+        .broadcast(
+            "91.0",
+            serde_json::json!({
+                "type": "fafb",
+                "project": "test",
+            }),
+        )
+        .await;
     assert!(result.is_ok(), "Broadcast should succeed over live WS");
 
     client.disconnect().await.unwrap();
@@ -295,8 +325,18 @@ async fn test_broadcast_then_tune_lifecycle() {
 
     // Tune first, then broadcast — both should work
     assert!(client.tune(vec!["91.0".into()]).await.is_ok());
-    assert!(client.broadcast("91.0", serde_json::json!({"seq": 1})).await.is_ok());
-    assert!(client.broadcast("92.5", serde_json::json!({"seq": 2})).await.is_ok());
+    assert!(
+        client
+            .broadcast("91.0", serde_json::json!({"seq": 1}))
+            .await
+            .is_ok()
+    );
+    assert!(
+        client
+            .broadcast("92.5", serde_json::json!({"seq": 2}))
+            .await
+            .is_ok()
+    );
 
     client.disconnect().await.unwrap();
     assert_eq!(client.state().await, ConnectionState::Disconnected);
@@ -326,12 +366,20 @@ async fn test_grok_preset_full_lifecycle() {
 
     // Full flow: tune + broadcast + disconnect
     assert!(client.tune(vec!["91.0".into()]).await.is_ok());
-    assert!(client.broadcast("91.0", serde_json::json!({
-        "type": "fafb",
-        "project": "xai-demo",
-        "yaml_bytes": 1240,
-        "fafb_bytes": 404,
-    })).await.is_ok());
+    assert!(
+        client
+            .broadcast(
+                "91.0",
+                serde_json::json!({
+                    "type": "fafb",
+                    "project": "xai-demo",
+                    "yaml_bytes": 1240,
+                    "fafb_bytes": 404,
+                })
+            )
+            .await
+            .is_ok()
+    );
 
     client.disconnect().await.unwrap();
     assert_eq!(client.state().await, ConnectionState::Disconnected);
@@ -346,7 +394,11 @@ fn test_server_broadcast_deserialization() {
     let json = r#"{"type":"broadcast","frequency":"91.0","event":{"type":"fafb","size":220},"timestamp":"2026-03-06T21:00:00Z"}"#;
     let msg: ServerMessage = serde_json::from_str(json).unwrap();
     match msg {
-        ServerMessage::Broadcast { frequency, event, timestamp } => {
+        ServerMessage::Broadcast {
+            frequency,
+            event,
+            timestamp,
+        } => {
             assert_eq!(frequency, "91.0");
             assert_eq!(event["type"], "fafb");
             assert_eq!(event["size"], 220);

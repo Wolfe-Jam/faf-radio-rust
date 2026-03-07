@@ -3,7 +3,9 @@
 //! Tests state management, configuration, serialization,
 //! and WebSocket integration for the Radio Protocol client.
 
-use faf_radio_rust::{ClientAction, ConnectionState, RadioClient, RadioConfig, RadioError, ServerMessage};
+use faf_radio_rust::{
+    ClientAction, ConnectionState, RadioClient, RadioConfig, RadioError, ServerMessage,
+};
 use serde_json;
 
 // =============================================================================
