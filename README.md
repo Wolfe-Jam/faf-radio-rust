@@ -8,8 +8,16 @@ Client SDK for [MCPaaS](https://mcpaas.live) — persistent AI context infrastru
 
 ```toml
 [dependencies]
-faf-radio-rust = "0.1"
+faf-radio-rust = "0.2"
 tokio = { version = "1", features = ["full"] }
+serde_json = "1.0"
+```
+
+Or via the meta-crate:
+
+```toml
+[dependencies]
+faf = { version = "0.3", features = ["radio"] }
 ```
 
 ## Quick Start
@@ -19,12 +27,17 @@ use faf_radio_rust::{RadioClient, RadioConfig};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut radio = RadioClient::new(
-        RadioConfig::new("wss://faf-beacon.wolfejam2020.workers.dev/radio")
-    );
+    let mut radio = RadioClient::new(RadioConfig::grok());
 
     radio.connect().await?;
     radio.tune(vec!["91.0".to_string()]).await?;
+
+    // Broadcast an event on the frequency
+    radio.broadcast("91.0", serde_json::json!({
+        "type": "fafb",
+        "project": "my-project",
+        "size": 220,
+    })).await?;
 
     // Context arrives from any AI, any session
     tokio::time::sleep(tokio::time::Duration::from_secs(30)).await;
@@ -46,6 +59,32 @@ You → Broadcast to 91.0 FM (send once)
 = 1x cost, instant, zero drift
 ```
 
+## Presets
+
+`RadioConfig::grok()` connects to the FAF beacon with zero configuration:
+
+```rust
+// Before (v0.1):
+let config = RadioConfig::new("wss://faf-beacon.wolfejam2020.workers.dev/radio");
+
+// After (v0.2):
+let config = RadioConfig::grok();
+```
+
+## Broadcasting
+
+Clients can now send events on frequencies (v0.2.0):
+
+```rust
+// Broadcast FAFb metadata
+client.broadcast("91.0", serde_json::json!({
+    "type": "fafb",
+    "project": "faf-cli",
+    "yaml_bytes": 4188,
+    "fafb_bytes": 220,
+})).await?;
+```
+
 ## Multi-AI Example
 
 ```rust
@@ -53,11 +92,9 @@ use faf_radio_rust::{RadioClient, RadioConfig};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let url = "wss://faf-beacon.wolfejam2020.workers.dev/radio";
-
-    let mut claude = RadioClient::new(RadioConfig::new(url));
-    let mut grok   = RadioClient::new(RadioConfig::new(url));
-    let mut gemini = RadioClient::new(RadioConfig::new(url));
+    let mut claude = RadioClient::new(RadioConfig::grok());
+    let mut grok   = RadioClient::new(RadioConfig::grok());
+    let mut gemini = RadioClient::new(RadioConfig::grok());
 
     claude.connect().await?;
     grok.connect().await?;
@@ -77,31 +114,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 | Method | Description |
 |--------|-------------|
-| `connect().await` | Connect to MCPaaS |
+| `RadioConfig::grok()` | Preset config for Grok inference frequency |
+| `RadioConfig::new(url)` | Custom server URL |
+| `connect().await` | Connect to beacon |
 | `tune(frequencies).await` | Subscribe to frequencies |
 | `untune(frequencies).await` | Unsubscribe |
+| `broadcast(freq, event).await` | Send event on a frequency |
 | `disconnect().await` | Disconnect |
 | `state().await` | Get connection state |
 | `validate_frequencies(&freqs)` | Validate range (40.0-108.0 FM) |
 
 ### Features
 
+- Preset configs (`RadioConfig::grok()`) — zero-config setup
+- Client broadcasting — send events on frequencies
 - Auto-reconnection with exponential backoff
 - Heartbeat (ping/pong every 30s)
 - Frequency validation (40.0-108.0 FM)
-- Type-safe protocol messages
+- Type-safe protocol messages (serde)
 - Tokio async/await
 
 ## Testing
 
-**46/46 passing** — WJTTC Championship-Grade:
+**50/50 passing** — WJTTC Championship-Grade:
 
 | Tier | Tests | What |
 |------|-------|------|
 | T1 BRAKES | 14 | Security — injection, boundary, validation |
-| T2 ENGINE | 18 | Core — state, config, serialization |
+| T2 ENGINE | 19 | Core — state, config, serialization, broadcast |
 | T3 AERO | 12 | Edge cases — error display, traits |
-| Unit | 2 | Inline |
+| Unit | 5 | Inline — grok preset, broadcast validation |
 
 ```bash
 cargo test
@@ -111,6 +153,7 @@ cargo test
 
 | Crate | What |
 |-------|------|
+| [faf](https://crates.io/crates/faf) | Meta-crate — `cargo add faf --features radio` |
 | [faf-rust-sdk](https://crates.io/crates/faf-rust-sdk) | Parse, validate, compile .faf files |
 | **faf-radio-rust** | Stream context live via Radio Protocol |
 

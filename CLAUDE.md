@@ -1,10 +1,10 @@
 # 🏎️ CLAUDE.md - faf-radio-rust Persistent Context & Intelligence
 
 ## PROJECT STATE: CHAMPIONSHIP 🥉
-**Current Position:** Day 2 Complete - Bronze Tier
+**Current Position:** v0.2.0 — Grok Presets + Client Broadcast
 **Tyre Compound:** ULTRASOFT C5 (Maximum Performance)
-**Test Status:** 46/46 passing (100% - Championship 🏆)
-**Deployment:** Published to crates.io (mcpaas@0.2.0)
+**Test Status:** 50/50 passing (100% - Championship 🏆)
+**Deployment:** Published to crates.io (faf-radio-rust@0.2.0)
 
 ---
 
@@ -12,14 +12,14 @@
 
 ### Project Identity
 - **Name:** faf-radio-rust
-- **Version:** 0.1.0
+- **Version:** 0.2.0
 - **Stack:** Rust 2024, Tokio, tokio-tungstenite v0.28
 - **Quality:** Championship Performance 🥉
 - **Tagline:** "Radio is back. Loved way more than REST."
 
 ### Technical Architecture
 **What:** Radio Protocol client for Rust - AI Context Broadcasting
-**How:** WebSocket-based multiplexed broadcasting (listen-only client)
+**How:** WebSocket-based multiplexed broadcasting (tune, listen, and broadcast)
 **Why:** Broadcast once → N AIs receive (99% cost reduction)
 
 **Key Innovation:** Clients tune to frequencies, server broadcasts when souls update
@@ -27,7 +27,9 @@
 ### Architecture Pattern
 ```
 Clients (WebSocket):
-  - Connect → Tune → Listen
+  - Connect → Tune → Listen / Broadcast
+  - RadioConfig::grok() preset (zero-config)
+  - client.broadcast(freq, event) — send events on frequencies
   - Auto-reconnect with exponential backoff
   - Heartbeat every 30s
 
@@ -44,10 +46,10 @@ Server (HTTP + WebSocket):
 ### 📊 Context Quality Status
 - **FAF Score:** 94/100 🥉 Bronze (genuine faf-cli workflow)
 - **Birth DNA:** 29% → **Growth:** +65% in 21 minutes
-- **Test Coverage:** 46/46 (100%)
-- **WJTTC Certification:** All 3 Tiers Complete (T1: 14, T2: 18, T3: 12)
+- **Test Coverage:** 50/50 (100%)
+- **WJTTC Certification:** All 3 Tiers Complete (T1: 14, T2: 19, T3: 12) + 5 unit
 - **Overall Assessment:** Championship Bronze
-- **Last Updated:** 2026-02-13
+- **Last Updated:** 2026-03-06
 
 ---
 
@@ -70,25 +72,26 @@ Server (HTTP + WebSocket):
 ### Test Results (Championship 🏆)
 
 **Layer 1: Industry Standard (Rust cargo test)**
-- ✅ 46 tests passing
+- ✅ 50 tests passing
 - ✅ 0 tests failing
 - ✅ 100% pass rate
-- ✅ Zero errors, zero warnings
+- ✅ Zero errors, zero warnings, clippy clean
 
 **Layer 2: WJTTC Championship (3-Tier Coverage)**
 - ✅ Tier 1 BRAKES (Security): 14/14 passing
-- ✅ Tier 2 ENGINE (Core): 18/18 passing
+- ✅ Tier 2 ENGINE (Core): 19/19 passing
 - ✅ Tier 3 AERO (Edge Cases): 12/12 passing
-- ✅ Unit tests: 2/2 passing
+- ✅ Unit tests: 5/5 passing
 
 **Test Breakdown:**
 - Tier 1: Frequency validation (14 tests - Security)
   - Valid ranges, boundary, injection, emoji, unicode
-- Tier 2: Core functionality (18 tests - Engine)
-  - State management, config, serialization, local WS integration
+- Tier 2: Core functionality (19 tests - Engine)
+  - State management, config, serialization, broadcast serialization, local WS integration
 - Tier 3: Edge cases (12 tests - Aero)
   - Error display, trait behaviors, deserialization, config boundaries
-- Unit tests (2 tests - Inline)
+- Unit tests (5 tests - Inline)
+  - Frequency validation, initial state, grok preset, broadcast invalid freq, broadcast when disconnected
 
 **Run tests:** `cargo test`
 
@@ -108,7 +111,7 @@ Server (HTTP + WebSocket):
 ### Tests
 - `tests/WJTTC-TEST-SUITE.md` - Full test plan
 - `tests/tier1_frequency_validation.rs` - Security (14 tests)
-- `tests/tier2_core_functionality.rs` - Core (18 tests)
+- `tests/tier2_core_functionality.rs` - Core (19 tests)
 - `tests/tier3_edge_cases.rs` - Edge cases (12 tests)
 
 ### Documentation
@@ -129,15 +132,18 @@ Server (HTTP + WebSocket):
 - [x] Event-driven API
 - [x] Frequency validation (40.0-108.0 FM)
 - [x] WJTTC Tier 1 tests (14/14 passing)
-- [x] WJTTC Tier 2 tests (18/18 passing)
+- [x] WJTTC Tier 2 tests (19/19 passing)
 - [x] WJTTC Tier 3 tests (12/12 passing)
-- [x] Unit tests (2/2 passing)
+- [x] Unit tests (5/5 passing)
 - [x] README documentation with 6Ws
 - [x] FAF integration (94/100 Bronze 🥉)
 - [x] Championship commit
+- [x] Publish v0.1.0 to crates.io (2026-03-04)
+- [x] RadioConfig::grok() preset (v0.2.0)
+- [x] ClientAction::Broadcast + RadioClient::broadcast() (v0.2.0)
+- [x] Publish v0.2.0 to crates.io (2026-03-06)
 
 ### Next Steps 🔜
-- [x] Publish to crates.io ✅ (mcpaas@0.2.0 — 2026-03-04)
 - [ ] Add CI/CD (GitHub Actions)
 - [ ] Add more examples
 - [ ] Documentation improvements
@@ -161,9 +167,11 @@ faf score
 
 ### Protocol Notes
 - **Client → Server:** `{action: 'tune', frequencies: ['91.0']}`
+- **Client → Server:** `{action: 'broadcast', frequency: '91.0', event: {...}}`
 - **Server → Client:** `{type: 'tuned', frequencies: ['91.0'], ...}`
-- Broadcasts are **server-side only** (triggered by soul updates)
-- Clients **listen only** (no client-side broadcasting)
+- **Server → Client:** `{type: 'broadcast', frequency: '91.0', event: {...}, timestamp: '...'}`
+- Clients can now both listen AND broadcast (v0.2.0)
+- `RadioConfig::grok()` — zero-config preset for Grok inference frequency
 
 ### Server URLs
 - **Production:** `wss://faf-beacon.wolfejam2020.workers.dev/radio`
@@ -193,9 +201,9 @@ faf score
 - thiserror for ergonomic error handling
 
 ### Architecture Clarification
-- Clients tune and listen (WebSocket)
-- Server broadcasts when souls update (HTTP POST)
-- Separation of concerns: listening ≠ broadcasting
+- Clients tune, listen, and broadcast (WebSocket) — full protocol symmetry since v0.2.0
+- Server also broadcasts when souls update (HTTP POST)
+- `RadioConfig::grok()` replaces manual `RadioConfig::new("wss://faf-beacon...")`
 ---
 
 **STATUS: BI-SYNC ACTIVE 🔗 - Synchronized with .faf context!**
