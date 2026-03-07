@@ -102,6 +102,18 @@ impl RadioClient {
         Ok(())
     }
 
+    /// Broadcast an event on a frequency
+    pub async fn broadcast(&self, frequency: &str, event: serde_json::Value) -> Result<()> {
+        self.validate_frequencies(&[frequency.to_string()])?;
+        self.tx
+            .send(ClientAction::Broadcast {
+                frequency: frequency.to_string(),
+                event,
+            })
+            .map_err(|_| RadioError::NotConnected)?;
+        Ok(())
+    }
+
     /// Validate frequency range (40.0-108.0 FM)
     pub fn validate_frequencies(&self, frequencies: &[String]) -> Result<()> {
         for freq in frequencies {
@@ -291,5 +303,36 @@ mod tests {
         // State check requires async, so we can't test it in a sync test
         // This is just a placeholder for the sync test
         assert_eq!(client.config.url, "wss://example.com");
+    }
+
+    #[test]
+    fn test_grok_preset() {
+        let config = RadioConfig::grok();
+        assert_eq!(config.url, "wss://faf-beacon.wolfejam2020.workers.dev/radio");
+        assert!(config.auto_reconnect);
+        assert_eq!(config.max_reconnect_attempts, 5);
+    }
+
+    #[tokio::test]
+    async fn test_broadcast_invalid_frequency() {
+        let client = RadioClient::new(RadioConfig::grok());
+        let result = client
+            .broadcast("999.0", serde_json::json!({"type": "test"}))
+            .await;
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            RadioError::InvalidFrequency(_)
+        ));
+    }
+
+    #[tokio::test]
+    async fn test_broadcast_when_disconnected() {
+        let client = RadioClient::new(RadioConfig::grok());
+        let result = client
+            .broadcast("91.0", serde_json::json!({"type": "test"}))
+            .await;
+        assert!(result.is_err());
+        assert!(matches!(result.unwrap_err(), RadioError::NotConnected));
     }
 }

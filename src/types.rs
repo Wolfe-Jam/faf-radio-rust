@@ -19,6 +19,11 @@ pub enum ClientAction {
     Untune { frequencies: Vec<String> },
     /// Ping for heartbeat
     Ping,
+    /// Broadcast an event on a frequency
+    Broadcast {
+        frequency: String,
+        event: serde_json::Value,
+    },
 }
 
 /// Server message received from server
@@ -86,5 +91,10 @@ impl RadioConfig {
             url: url.into(),
             ..Default::default()
         }
+    }
+
+    /// Preset config for Grok inference frequency
+    pub fn grok() -> Self {
+        Self::new("wss://faf-beacon.wolfejam2020.workers.dev/radio")
     }
 }

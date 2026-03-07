@@ -189,6 +189,21 @@ fn test_ping_action_serialization() {
 }
 
 #[test]
+fn test_broadcast_action_serialization() {
+    let action = ClientAction::Broadcast {
+        frequency: "91.0".to_string(),
+        event: serde_json::json!({"type": "fafb", "size": 220}),
+    };
+    let json = serde_json::to_string(&action).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&json).unwrap();
+
+    assert_eq!(parsed["action"], "broadcast");
+    assert_eq!(parsed["frequency"], "91.0");
+    assert_eq!(parsed["event"]["type"], "fafb");
+    assert_eq!(parsed["event"]["size"], 220);
+}
+
+#[test]
 fn test_server_messages_deserialization() {
     // Connected
     let connected_json =
