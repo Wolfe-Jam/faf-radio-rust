@@ -163,6 +163,8 @@ Also available in [Bun/TypeScript](https://www.npmjs.com/package/faf-radio) and 
 
 This crate was published as `mcpaas`. The platform lives on at [mcpaas.live](https://mcpaas.live) — the radio client now has its own name.
 
+If `faf-radio-rust` has been useful, consider starring the repo — it helps others find it.
+
 ## License
 
 MIT
