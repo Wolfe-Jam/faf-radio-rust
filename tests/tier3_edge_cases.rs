@@ -4,7 +4,6 @@
 //! edge cases, and configuration boundary conditions.
 
 use faf_radio_rust::{ConnectionState, RadioConfig, RadioError, ServerMessage};
-use serde_json;
 
 // =============================================================================
 // ERROR DISPLAY (Tests 1-4)
@@ -94,6 +93,7 @@ fn test_connection_state_equality() {
 }
 
 #[test]
+#[allow(clippy::clone_on_copy)] // intentionally exercises the Clone impl
 fn test_connection_state_clone_copy() {
     let state = ConnectionState::Connected;
 

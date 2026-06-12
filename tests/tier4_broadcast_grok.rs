@@ -6,7 +6,6 @@
 use faf_radio_rust::{
     ClientAction, ConnectionState, RadioClient, RadioConfig, RadioError, ServerMessage,
 };
-use serde_json;
 
 // =============================================================================
 // T4.1 GROK PRESET — BRAKES (Tests 1-5)

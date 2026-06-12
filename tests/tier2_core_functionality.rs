@@ -6,7 +6,6 @@
 use faf_radio_rust::{
     ClientAction, ConnectionState, RadioClient, RadioConfig, RadioError, ServerMessage,
 };
-use serde_json;
 
 // =============================================================================
 // STATE MANAGEMENT (Tests 1-6)
