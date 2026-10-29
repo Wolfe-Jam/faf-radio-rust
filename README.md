@@ -2,6 +2,8 @@
 
 **Radio Protocol client for Rust.** Broadcast AI context once, every tool receives.
 
+⭐ [Star it on GitHub](https://github.com/Wolfe-Jam/faf-radio-rust): bookmarks it for you, helps other devs find it too.
+
 Client SDK for [MCPaaS](https://mcpaas.live) — persistent AI context infrastructure.
 
 ## Install
